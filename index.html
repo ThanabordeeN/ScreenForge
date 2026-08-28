@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>ScreenForge</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div>
+          <div class="brand">ScreenForge</div>
+          <div class="subtitle">Local browser screen replacement</div>
+        </div>
+        <div class="local-badge">Runs on this device</div>
+      </header>
+
+      <main class="layout">
+        <aside class="panel controls">
+          <section>
+            <h2>1. Source footage</h2>
+            <label class="file-drop">
+              <span>Choose base video</span>
+              <input id="baseInput" type="file" accept="video/*" />
+            </label>
+            <div id="baseMeta" class="meta">No base video loaded</div>
+          </section>
+
+          <section>
+            <h2>2. Screen content</h2>
+            <label class="file-drop secondary">
+              <span>Choose video or image</span>
+              <input id="replacementInput" type="file" accept="video/*,image/*" />
+            </label>
+            <div id="replacementMeta" class="meta">No replacement loaded</div>
+          </section>
+
+          <section>
+            <h2>3. Tracking</h2>
+            <label class="toggle-row">
+              <span>Auto track</span>
+              <input id="autoTrack" type="checkbox" checked />
+            </label>
+            <div class="button-row">
+              <button id="detectBtn" type="button">Detect screen</button>
+              <button id="resetBtn" type="button" class="ghost">Reset track</button>
+            </div>
+            <p class="hint">Drag any corner handle in the preview to correct it manually.</p>
+          </section>
+
+          <section>
+            <h2>4. Composite</h2>
+            <label class="slider-row">
+              <span>Overscan</span>
+              <output id="overscanValue">1.5%</output>
+              <input id="overscan" type="range" min="0" max="4" value="1.5" step="0.1" />
+            </label>
+            <label class="slider-row">
+              <span>Green minimum</span>
+              <output id="greenMinValue">0.22</output>
+              <input id="greenMin" type="range" min="0.05" max="0.8" value="0.22" step="0.01" />
+            </label>
+            <label class="slider-row">
+              <span>Green dominance</span>
+              <output id="dominanceValue">1.18×</output>
+              <input id="dominance" type="range" min="1.02" max="2" value="1.18" step="0.01" />
+            </label>
+          </section>
+
+          <section>
+            <h2>5. Export</h2>
+            <button id="exportBtn" type="button" class="primary" disabled>Export locally</button>
+            <p class="hint">V1 exports in real time using the best MediaRecorder format supported by the browser.</p>
+          </section>
+        </aside>
+
+        <section class="workspace">
+          <div class="preview-shell">
+            <div class="preview-stage" id="previewStage">
+              <canvas id="renderCanvas"></canvas>
+              <canvas id="overlayCanvas"></canvas>
+              <div id="emptyState" class="empty-state">
+                <strong>Load a green-screen clip</strong>
+                <span>ScreenForge will detect, track, warp and composite locally.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="transport">
+            <button id="playBtn" type="button" disabled>Play</button>
+            <input id="timeline" type="range" min="0" max="1" value="0" step="0.001" disabled />
+            <span id="timeLabel">00:00 / 00:00</span>
+          </div>
+
+          <div class="statusbar">
+            <span id="opencvStatus">Loading OpenCV…</span>
+            <span id="trackStatus">Waiting for video</span>
+            <span id="fpsStatus">—</span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <video id="baseVideo" class="hidden-media" playsinline muted></video>
+    <video id="replacementVideo" class="hidden-media" playsinline muted loop></video>
+    <img id="replacementImage" class="hidden-media" alt="" />
+
+    <script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
